@@ -1,7 +1,9 @@
 package encoding
 
-import "crypto/sha512"
-import "encoding/base64"
+import (
+	"crypto/sha512"
+	"encoding/base64"
+)
 
 func Conversion(input string) string {
 	bytes := []byte(input)
