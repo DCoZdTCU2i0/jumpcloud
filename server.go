@@ -19,6 +19,13 @@ func hashHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "", http.StatusMethodNotAllowed)
 		return
 	}
+
+	// Jeff mentioned that the 'password' field should be 256 characters or less.
+	if r.ContentLength > int64(len("password=") + 256) {
+		http.Error(w, "", http.StatusBadRequest)
+		return
+	}
+
 	if err := r.ParseForm(); err != nil {
 		return
 	}
