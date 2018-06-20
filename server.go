@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+
 	var srv http.Server
 	srv.Addr = ":8080"
 
@@ -19,10 +20,13 @@ func main() {
 	http.HandleFunc("/stats", handlers.NewStatsHandler(count, totalTime))
 	http.HandleFunc("/shutdown", handlers.NewShutdownHandler(temp, &srv))
 
+	log.Println("Starting server")
 	if err := srv.ListenAndServe(); err != http.ErrServerClosed {
 		// Error starting or closing listener:
 		log.Printf("HTTP server ListenAndServe: %v", err)
 	}
 
 	<-temp
+
+	log.Println("Server shutdown")
 }

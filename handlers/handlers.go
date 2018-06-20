@@ -13,14 +13,17 @@ import (
 
 func NewHashHandler(count *uint64, totalTime *uint64) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Processing request to NewHashHandler")
 		if r.Method != "POST" {
 			http.Error(w, "", http.StatusMethodNotAllowed)
+			log.Printf("Incorrct HTTP Verb in request to NewHashHandler")
 			return
 		}
 
 		// Jeff mentioned that the 'password' field should be 256 characters or less.
 		if r.ContentLength > int64(len("password=")+256) {
 			http.Error(w, "", http.StatusBadRequest)
+			log.Printf("Request length to long in NewHashHandler")
 			return
 		}
 
@@ -51,6 +54,7 @@ func NewHashHandler(count *uint64, totalTime *uint64) func(w http.ResponseWriter
 
 func NewStatsHandler(count *uint64, totalTime *uint64) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Processing request to NewStatsHandler")
 		type Stats struct {
 			Total   uint64 `json:"total"`
 			Average uint64 `json:"average"`
@@ -70,6 +74,7 @@ func NewStatsHandler(count *uint64, totalTime *uint64) func(w http.ResponseWrite
 
 func NewShutdownHandler(temp chan *struct{}, srv *http.Server) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Shutting down server now.")
 		fmt.Fprint(w, "Shutting down server now.")
 
 		go func() {
