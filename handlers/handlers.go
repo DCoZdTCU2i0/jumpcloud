@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/DCoZdTCU2i0/jumpcloud/encoding"
+	"log"
 	"net/http"
 	"sync/atomic"
 	"time"
@@ -63,5 +65,18 @@ func NewStatsHandler(count *uint64, totalTime *uint64) func(w http.ResponseWrite
 
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		json.NewEncoder(w).Encode(output)
+	}
+}
+
+func NewShutdownHandler(temp chan *struct{}, srv *http.Server) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "Shutting down server now.")
+
+		go func() {
+			if err := srv.Shutdown(context.Background()); err != nil {
+				log.Printf("HTTP server Shutdown: %v", err)
+			}
+			close(temp)
+		}()
 	}
 }
